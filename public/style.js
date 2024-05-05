@@ -16,5 +16,34 @@ export const styles = StyleSheet.create({
             fontSize: 32,
             fontWeight: "bold"
         },
+        button: {
+            width: 354, 
+            height: 54,
+            justifyContent: "center",
+            alignItems: "center", 
+            backgroundColor: "white",
+            borderRadius: 10
+        },
+        buttonText: {
+            color: "#272727",
+            fontWeight: "bold",
+            fontSize: 24
+        }
+        
+    },
+    light: {
+        button: {
+            width: 354, 
+            height: 54,
+            justifyContent: "center",
+            alignItems: "center", 
+            backgroundColor: "#272727",
+            borderRadius: 10
+        },
+        buttonText: {
+            color: "white",
+            fontWeight: "bold",
+            fontSize: 24
+        }
     }
 });
