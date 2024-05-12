@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Pressable, Text, View, TextInput } from 'react-native';
+import { Pressable, Text, View, TextInput, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
@@ -12,7 +12,7 @@ import formatter from '../helpers/money-converter'
 import SubscriptionController from '../database/subscription-controller';
 import BudgetController from '../database/budget-controller';
 
-export default function Page() {
+export default function Index() {
   // SQLite Intialisation
   const db = useSQLiteContext();
   const subscriptionController = new SubscriptionController(db)
@@ -79,7 +79,7 @@ export default function Page() {
  
   return (
       <GestureHandlerRootView style={styles.dark.container}>
-
+          <StatusBar barStyle={'light-content'} backgroundColor={styles.dark.backgroundColor}/>
           {/* Header */}
           <View name="Header" style={{flexDirection:"row", justifyContent: "space-between", alignItems: "center"}}>
             <Text style={styles.dark.headerText}>Welcome, Raphael</Text>
