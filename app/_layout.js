@@ -1,7 +1,10 @@
 import { Slot, Stack, Screen } from 'expo-router';
+import { SQLiteProvider } from 'expo-sqlite';
 
 export default function HomeLayout() {
   return (
-    <Slot/>
+    <SQLiteProvider databaseName="money-plant-database">
+      <Slot/>
+    </SQLiteProvider>
   )
 }

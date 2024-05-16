@@ -1,79 +1,35 @@
-import db from './db';
-import resetDatabase from './reset-db';
+import * as SQLite from 'expo-sqlite';
 
-// Create Settings Table Schema
-function createSettingsTable() {
-    const SettingsTableSchema = `CREATE TABLE IF NOT EXISTS Settings (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT
-    );`;
-    db.transaction(
-        tx => {
-          tx.executeSql(
-            SettingsTableSchema,
-            [],
-            (txObj, resultSet) => {
-              console.log("Settings table created!")
-            },
-            (txObj, error) => {
-              console.log(error)
-            }
-          );
-        },
-      );
+async function setup(env) {
+  if (env == "development"){
+    const db = await SQLite.openDatabaseAsync('money-plant-database');
+    await db.execAsync(`
+      DROP TABLE IF EXISTS Settings;
+      DROP TABLE IF EXISTS Budgets;
+      DROP TABLE IF EXISTS Subscriptions;
+
+      CREATE TABLE IF NOT EXISTS Settings (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL , name TEXT, appearance INTEGER); 
+      INSERT INTO Settings (name, appearance) VALUES ('raphael', 'dark');
+
+      CREATE TABLE IF NOT EXISTS Budgets (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, budget_amt INTEGER, start_date TEXT, end_date TEXT, reset_frequency TEXT);
+      INSERT INTO Budgets (name, budget_amt, start_date, end_date, reset_frequency) VALUES ('Monthly Budget', 40000, '2024-05-11', '2024-06-11', 'monthly');
+      
+      CREATE TABLE IF NOT EXISTS Subscriptions (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL , name TEXT); 
+      INSERT INTO Subscriptions (name) VALUES ('Entertainment Subscriptions');
+    `)
+    console.log( "Development database initialised")
+  }
+  else if (env == "production"){
+    const db = await SQLite.openDatabaseAsync('money-plant-database');
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS Settings (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL , name TEXT, appearance INTEGER); 
+      CREATE TABLE IF NOT EXISTS Budgets (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, budget_amt INTEGER, start_date TEXT, end_date TEXT, reset_frequency TEXT);
+    `)
+    console.log( "Production database initialised")
+  }
+  else {
+    throw new Error("Database Environment invalid")
+  }
 }
 
-
-function seedSettingsTable() {
-  const Command = `INSERT INTO Settings (name) VALUES ('raphael')`;
-  db.transaction(
-      tx => {
-        tx.executeSql(
-          Command,
-          [], 
-          (txObj, resultSet) => {
-            console.log("Settings table seeded:", resultSet)
-          },
-          (txObj, error) => {
-            console.log("error:", error)
-          }
-        );
-      },
-    );
-}
-
-// Create Budget Table 
-function createBudgetTable() {
-    const BudgetTableSchema = `CREATE TABLE IF NOT EXISTS Budgets (
-        Id INTEGER PRIMARY KEY AUTOINCREMENT,
-        Name TEXT,
-        BudgetAmt REAL,
-        StartDate TEXT,
-        EndDate TEXT,
-        ResetFrequency TEXT
-    );`
-    db.transaction(
-        tx => {
-          tx.executeSql(
-            BudgetTableSchema,
-            [],
-            (txObj, resultSet) => {
-              console.log("Budget table created!")
-            },
-            (txObj, error) => {
-              console.log(error)
-            }
-          );
-        },
-      );
-}
-
-// Function to set up the database
-const setupDatabase = () => {
-  resetDatabase()
-  createSettingsTable()
-  seedSettingsTable()
-  createBudgetTable()
-};
-
-export default setupDatabase;
+export default setup
