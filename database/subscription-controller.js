@@ -14,6 +14,12 @@ export default class SubscriptionController {
         }
     }
     addSubscription = async (name) => {
+        if (name == '' || name == undefined || name == null) {
+          validationError = {
+            error: "Name must not be null"  
+          }
+          return validationError
+        }
         const createSubscriptionStatement = await this._db.prepareAsync(
             `INSERT INTO Subscriptions (name) VALUES ($name);`
         );

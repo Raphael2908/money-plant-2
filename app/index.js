@@ -23,6 +23,7 @@ export default function Index() {
   const [budgets, setBudgets] = useState()
   const [subscriptions, setSubscriptions] = useState()
   const [subscriptionName, setSubscriptionName] = useState()
+  const [subscriptionFormValidation, setSubscriptionFormValidation] = useState({name: ''})
 
   // Bottom Sheet Intialisation
   const bottomSheetRef = useRef(null)
@@ -49,6 +50,11 @@ export default function Index() {
   // SQLite CRUD functions
   const handleAddSubscription = async () => {
     const result = await subscriptionController.addSubscription(subscriptionName)
+    if(result.error != undefined){
+      setSubscriptionFormValidation({...subscriptionFormValidation, name: result.error})
+      return 
+    }
+    setSubscriptionFormValidation({name: ''})
     setSubscriptions(result)
     handleSubscriptionFormClose()
     setSubscriptionName("")
@@ -91,7 +97,7 @@ export default function Index() {
           ))}
           
           {subscriptions.map((subscriptions, index) => (
-            <HomeCard key={index} title={subscriptions.name} chip={"Monthly bill: $215"}/>
+            <HomeCard key={index} title={subscriptions.name} chip={"Monthly bill: $0"}/>
           ))}
 
           <BottomSheet ref={bottomSheetRef} enablePanDownToClose={true} index={-1} snapPoints={["25%"]}>
@@ -116,7 +122,11 @@ export default function Index() {
               </View>
               {/* Form */}
               <View style={{justifyContent: "space-between", alignItems: "center", height:"90%"}}>
-                <TextInput value={subscriptionName} onChangeText={setSubscriptionName} style={{width:"100%", height: 43, borderWidth: 1, borderStyle:"solid",borderRadius: 5, paddingHorizontal: 10, borderColor: "white", color: "white"}} placeholderTextColor={"white"} placeholder='Name'/>
+                {/* Name Input */}
+                <View style={{width:"100%", gap:10}}>
+                  {subscriptionFormValidation.name ? <Text style={{color: "crimson", }}>{subscriptionFormValidation.name}</Text>: null}
+                  <TextInput value={subscriptionName} onChangeText={setSubscriptionName} style={{width:"100%", height: 43, borderWidth: 1, borderStyle:"solid",borderRadius: 5, paddingHorizontal: 10, borderColor: "white", color: "white"}} placeholderTextColor={"white"} placeholder='Name'/>
+                </View>
                 <Pressable style={styles.dark.button} onPress={handleAddSubscription}>
                   <Text style={styles.dark.buttonText}>Add New Subscription</Text>
                 </Pressable>
