@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { Link, Stack } from 'expo-router';
 import { Pressable, Text, View, TextInput, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -82,58 +83,63 @@ export default function Index() {
       </SafeAreaView>
     )
   }
- 
+  
   return (
-      <GestureHandlerRootView style={styles.dark.container}>
-          <StatusBar barStyle={'light-content'} backgroundColor={styles.dark.backgroundColor}/>
-          {/* Header */}
-          <View name="Header" style={{flexDirection:"row", justifyContent: "space-between", alignItems: "center"}}>
-            <Text style={styles.dark.headerText}>Welcome, Raphael</Text>
-            <Pressable onPress={handleSheetOpen}><AddIcon/></Pressable>
-          </View>
-          
-          {budgets.map((budget, index) => (
-            <HomeCard key={index} title={budget.name} chip={`Budget Amount: ${formatter(budget.budget_amt)}`}/>
-          ))}
-          
-          {subscriptions.map((subscriptions, index) => (
-            <HomeCard key={index} title={subscriptions.name} chip={"Monthly bill: $0"}/>
-          ))}
+    <GestureHandlerRootView style={{...styles.dark.container, paddingTop: 80}}>
+          <Stack.Screen options={{ headerShown: false}} />
+            <StatusBar barStyle={'light-content'} backgroundColor={styles.dark.backgroundColor}/>
 
-          <BottomSheet ref={bottomSheetRef} enablePanDownToClose={true} index={-1} snapPoints={["25%"]}>
-            <View style={{ alignItems: "center" ,justifyContent: "center", gap: 10}} >
-              <Pressable style={styles.light.button}>
-                <Text style={styles.light.buttonText}>Add New Budget</Text>
-              </Pressable>
-              <Pressable style={styles.light.button}>
-                <Text style={styles.light.buttonText} onPress={handleSubscriptionFormOpen}>Add New Subscription</Text>
-              </Pressable>
-            </View>
-          </BottomSheet>
-          
-          {/* Form Bottom Sheet */}
-
-          <BottomSheet backgroundStyle={{backgroundColor: styles.dark.backgroundColor}} backdropComponent={renderBackdrop} ref={subscriptionSheetRef} enablePanDownToClose={true} index={-1} snapPoints={["75%"]}>
-            {/* Form Container */}
-            <View style={{paddingVertical: 25, paddingHorizontal: 18, gap: 10}}>
               {/* Header */}
-              <View name="Header">
-                <Text style={styles.dark.headerText}>Add Subscriptions</Text>
+              <View name="Header" style={{flexDirection:"row", justifyContent: "space-between", alignItems: "center"}}>
+                <Text style={styles.dark.headerText}>Welcome, Raphael</Text>
+                <Pressable onPress={handleSheetOpen}><AddIcon/></Pressable>
               </View>
-              {/* Form */}
-              <View style={{justifyContent: "space-between", alignItems: "center", height:"90%"}}>
-                {/* Name Input */}
-                <View style={{width:"100%", gap:10}}>
-                  {subscriptionFormValidation.name ? <Text style={{color: "crimson", }}>{subscriptionFormValidation.name}</Text>: null}
-                  <TextInput value={subscriptionName} onChangeText={setSubscriptionName} style={{width:"100%", height: 43, borderWidth: 1, borderStyle:"solid",borderRadius: 5, paddingHorizontal: 10, borderColor: "white", color: "white"}} placeholderTextColor={"white"} placeholder='Name'/>
+  
+              {budgets.map((budget, index) => (
+                <HomeCard key={index} title={budget.name} chip={`Budget Amount: ${formatter(budget.budget_amt)}`}/>
+              ))}
+  
+              {subscriptions.map((subscription, index) => (
+                <Link key={index} push href={{
+                  pathname: "/subscription/[index]",
+                  params: { id: subscription.id, name: subscription.name }
+                }}>
+                  <HomeCard title={subscription.name} chip={"Monthly bill: $0"}/>
+                </Link>
+              ))}
+              <BottomSheet ref={bottomSheetRef} enablePanDownToClose={true} index={-1} snapPoints={["25%"]}>
+                <View style={{ alignItems: "center" ,justifyContent: "center", gap: 10}} >
+                  <Pressable style={styles.light.button}>
+                    <Text style={styles.light.buttonText}>Add New Budget</Text>
+                  </Pressable>
+                  <Pressable style={styles.light.button}>
+                    <Text style={styles.light.buttonText} onPress={handleSubscriptionFormOpen}>Add New Subscription</Text>
+                  </Pressable>
                 </View>
-                <Pressable style={styles.dark.button} onPress={handleAddSubscription}>
-                  <Text style={styles.dark.buttonText}>Add New Subscription</Text>
-                </Pressable>
-              </View>
-            </View>
-          </BottomSheet>
-          
+              </BottomSheet>
+  
+              {/* Form Bottom Sheet */}
+              <BottomSheet backgroundStyle={{backgroundColor: styles.dark.backgroundColor}} backdropComponent={renderBackdrop} ref={subscriptionSheetRef} enablePanDownToClose={true} index={-1} snapPoints={["75%"]}>
+                {/* Form Container */}
+                <View style={{paddingVertical: 25, paddingHorizontal: 18, gap: 10}}>
+                  {/* Header */}
+                  <View name="Header">
+                    <Text style={styles.dark.headerText}>Add Subscriptions</Text>
+                  </View>
+                  {/* Form */}
+                  <View style={{justifyContent: "space-between", alignItems: "center", height:"90%"}}>
+                    {/* Name Input */}
+                    <View style={{width:"100%", gap:10}}>
+                      {subscriptionFormValidation.name ? <Text style={{color: "crimson", }}>{subscriptionFormValidation.name}</Text>: null}
+                      <TextInput value={subscriptionName} onChangeText={setSubscriptionName} style={{width:"100%", height: 43, borderWidth: 1, borderStyle:"solid",borderRadius: 5, paddingHorizontal: 10, borderColor: "white", color: "white"}} placeholderTextColor={"white"} placeholder='Name'/>
+                    </View>
+                    <Pressable style={styles.dark.button} onPress={handleAddSubscription}>
+                      <Text style={styles.dark.buttonText}>Add New Subscription</Text>
+                    </Pressable>
+                  </View>
+                </View>
+              </BottomSheet>
+            
       </GestureHandlerRootView>
   )
 

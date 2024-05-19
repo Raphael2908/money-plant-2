@@ -7,6 +7,7 @@ async function setup(env) {
       DROP TABLE IF EXISTS Settings;
       DROP TABLE IF EXISTS Budgets;
       DROP TABLE IF EXISTS Subscriptions;
+      DROP TABLE IF EXISTS Subscription_items;
 
       CREATE TABLE IF NOT EXISTS Settings (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL , name TEXT, appearance INTEGER); 
       INSERT INTO Settings (name, appearance) VALUES ('raphael', 'dark');
@@ -16,6 +17,16 @@ async function setup(env) {
       
       CREATE TABLE IF NOT EXISTS Subscriptions (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL , name TEXT); 
       INSERT INTO Subscriptions (name) VALUES ('Entertainment Subscriptions');
+
+      CREATE TABLE IF NOT EXISTS Subscription_items (
+        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, subscription_id INT, 
+        name TEXT, price INTEGER, color TEXT, start_date TEXT, next_billing_date TEXT, reset_type TEXT, reset_interval INTEGER, 
+        FOREIGN KEY (subscription_id) REFERENCES Subscriptions(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+      ); 
+      -- Start date has to be in YYYY-MM-DD
+      INSERT INTO Subscription_items (name, price, color, start_date, next_billing_date, reset_type, reset_interval, subscription_id) VALUES ('Spotify', 1798, '52CA5E', '2024-05-08', '2024-06-08', 'Monthly', 8, 1); 
     `)
     console.log( "Development database initialised")
   }

@@ -5,7 +5,7 @@ export default function HomeCard({title, chip}) {
   return (
       <>
        {/* Home Card */}
-       <View style={{paddingHorizontal: 13, paddingVertical:17, backgroundColor: "#373737", borderRadius: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+       <View style={{width:"100%", paddingHorizontal: 13, paddingVertical:17, backgroundColor: "#373737", borderRadius: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
         <View style={{gap: 10}}>
           <Text style={{fontWeight: 'bold', fontSize: 13, color:"white"}}>{title}</Text>
           {/* Chip */}

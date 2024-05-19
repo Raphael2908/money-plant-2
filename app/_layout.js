@@ -4,7 +4,8 @@ import { SQLiteProvider } from 'expo-sqlite';
 export default function HomeLayout() {
   return (
     <SQLiteProvider databaseName="money-plant-database">
-      <Slot/>
+      <Stack>
+      </Stack>
     </SQLiteProvider>
   )
 }
