@@ -231,7 +231,7 @@ export default function SubscriptionIndex() {
         <View style={{paddingVertical: 25, paddingHorizontal: 18, gap: 10}}>
           <RNDateTimePicker onChange={(event, date) => {
             if(subscriptionItemForm.reset_type == "monthly"){
-              setSubscriptionItemForm({...subscriptionItemForm, reset_interval: date.getDate()})
+              setSubscriptionItemForm({...subscriptionItemForm, start_date:date.toISOString().split('T')[0], reset_interval: date.getDate()})
             }
             else if (subscriptionItemForm.reset_type == "daily") {
               setSubscriptionItemForm({...subscriptionItemForm, start_date: date.toISOString().split('T')[0]})

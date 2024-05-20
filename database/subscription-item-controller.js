@@ -51,14 +51,14 @@ export default class SubscriptionItemController {
       
       // reset type logic 
       // Calculate next billing date given a start date and the reset typer
-      let temp_start_date = new Date(start_date);
+      let temp_start_date = new Date(start_date)
       let next_billing_date = ""
 
       switch (reset_type) {
         case 'daily':
           // calculate next billing datet
           // Add the days to the given date
-          temp_start_date.setDate(temp_start_date.getDate() + reset_interval)
+          temp_start_date.setDate(temp_start_date.getDate() + parseInt(reset_interval))           
           // Format the new date back to 'YYYY-MM-DD'
           next_billing_date = temp_start_date.toISOString().split('T')[0];
           break;
@@ -97,13 +97,15 @@ export default class SubscriptionItemController {
           // Set the date to the adjusted day
           nextMonthDate.setDate(day);
 
+          // Add back time difference between UTC and Singapore
+          nextMonthDate = new Date(nextMonthDate.getTime() - nextMonthDate.getTimezoneOffset() * 60000) // 8 hrs converted to milliseconds
+
           next_billing_date = nextMonthDate.toISOString().split('T')[0];
           break;
 
         default:
           throw new Error("Something messed up in subscription item controller bruh")
       }
-
       // Add data to database
       try{
         await createSubscriptionItemStatement.executeAsync({
